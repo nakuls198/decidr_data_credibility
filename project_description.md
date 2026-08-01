@@ -1,7 +1,7 @@
-#Title: Assessing the Credibility of Organisational Knowledge from Fragmented Data 
+# Title: Assessing the Credibility of Organisational Knowledge from Fragmented Data 
 
 
-#Description: 
+# Description: 
 Organisations hold knowledge across people, documents, communications and operational systems. 
 Having information is not the same as that information being credible. 
 Evidence is often incomplete, outdated, copied from another source, or contradicted by what actually 
@@ -22,7 +22,7 @@ There is no single correct answer. Some claims should remain unresolved where th
 insufficient. The value lies in the transparency, calibration and defensibility of the approach. 
 
 
-#Approach and skills: 
+# Approach and skills: 
 Teams may take different technical paths — information retrieval, knowledge graphs, probabilistic or 
 Bayesian methods, LLM-assisted analysis, statistical modelling, or hybrids — provided the result is 
 transparent and explainable. 
