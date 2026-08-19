@@ -70,6 +70,6 @@ Renata Voss (CEO)
 | Naomi Kessler | Finance & People Ops | People Ops Lead | Harriet Doyle | 2021-05-24 | 5.2 yrs |
 | Paul Vasquez | Finance & People Ops | Office & IT Ops Coordinator | Harriet Doyle | 2023-08-08 (remote) | 3.0 yrs |
 
-Wei Zhang left Northfield on 2026-04-30 (resignation, relocated).
+Wei Zhang left Northfield on 2026-04-30 (resignation, relocated) — see [MTG-08](../05_meetings/MTG-08_wei_zhang_departure_handover.md) and [COMMS-14](../06_communications/communications_log.md).
 
 An earlier version of this org chart, dated 2023-02, is archived at [org_chart_2023-02_SUPERSEDED.md](superseded/org_chart_2023-02_SUPERSEDED.md).

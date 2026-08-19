@@ -1,5 +1,0 @@
-claim_id,claim_category,reference_claim,reference_status,valid_from,valid_to,responsible_role,known_exceptions,expected_supporting_sources,expected_contradictory_sources,difficulty_level
-C01,Financial control,Discounts above 15% require Finance (Head of Finance & People Ops) approval before the deal is closed.,Formal truth,2025-03-01,,Head of Finance & People Ops,No formally documented exceptions.,POL-01; INT-02; INT-03; MTG-01,,Low
-C09,Process step,New customer onboarding follows a standard 6-week implementation process owned by the Customer Success & Delivery team.,Formal truth,2024-01-15,,Head of Customer Success & Delivery,None significant.,POL-03; PROC-01; INT-06,,Low
-C27,Process step,"Customer-reported issues are escalated from Support to Engineering via a ticket in the support system, following a documented severity-based escalation path.",Formal truth,2021-01-01,,Support Lead,None for the formal path itself.,PROC-05; INT-07; INT-08,,Low
-C32,Process step,"All new hires complete a documented onboarding checklist within their first two weeks, owned by People Ops.",Formal truth,2021-05-24,,People Ops Lead,None significant.,POL-08; COMMS-12,,Low
