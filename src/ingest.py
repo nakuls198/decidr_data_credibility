@@ -1,25 +1,6 @@
 """
 Stage 1: Data ingestion.
 
-Reads the Northfield Phase 1 (a plain folder) and Phase 2 (a .zip, as
-Decidr shipped it) release packs and turns every file into Documents and
-Chunks (see schema.py), regardless of whether it is markdown or CSV, and
-regardless of whether it currently lives on disk as a folder or a zip.
-
-This is the one stage the rest of the pipeline should never have to
-re-derive: retrieval, reasoning, weighting and scoring all read
-outputs/chunks.jsonl rather than re-parsing the raw pack.
-
-Run directly:
-    python -m src.ingest --phase1 /path/to/phase1_framework_development \
-                          --phase2 /path/to/phase2_model_development.zip \
-                          --out outputs/
-
-Owner (per the Group Charter): Bhavika Lalwani (Data & Evidence Pipeline Lead).
-This module is a working baseline so the whole team is unblocked immediately;
-please extend it rather than rewrite it from scratch.
-"""
-
 from __future__ import annotations
 
 import argparse
