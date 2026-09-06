@@ -1,5 +1,4 @@
-"""
-Stage 1: Data ingestion.
+"""Stage 1: Data ingestion."""
 
 from __future__ import annotations
 
