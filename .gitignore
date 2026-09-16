@@ -1,2 +1,4 @@
 .DS_Store
 CLIENT_REQUIREMENTS_QUESTIONS.md
+__pycache__/
+*.pyc
