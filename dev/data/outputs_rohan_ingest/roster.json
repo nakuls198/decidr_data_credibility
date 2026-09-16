@@ -1,0 +1,323 @@
+{
+  "people": [
+    {
+      "name": "Renata Voss",
+      "first_name": "Renata",
+      "last_name": "Voss",
+      "function": "Leadership",
+      "role": "CEO / Founder",
+      "reports_to": "Board",
+      "start_date": "2020-01-13",
+      "tenure_at_period_end": "6.5 yrs",
+      "left": false
+    },
+    {
+      "name": "Marcus Ihejirika",
+      "first_name": "Marcus",
+      "last_name": "Ihejirika",
+      "function": "Leadership",
+      "role": "COO",
+      "reports_to": "Renata Voss",
+      "start_date": "2021-03-01",
+      "tenure_at_period_end": "5.3 yrs",
+      "left": false
+    },
+    {
+      "name": "Diane Okafor",
+      "first_name": "Diane",
+      "last_name": "Okafor",
+      "function": "Sales",
+      "role": "Head of Sales",
+      "reports_to": "Renata Voss",
+      "start_date": "2021-06-07",
+      "tenure_at_period_end": "5.1 yrs",
+      "left": false
+    },
+    {
+      "name": "Callum Reyes",
+      "first_name": "Callum",
+      "last_name": "Reyes",
+      "function": "Sales",
+      "role": "Senior Account Executive",
+      "reports_to": "Diane Okafor",
+      "start_date": "2022-01-10",
+      "tenure_at_period_end": "4.5 yrs",
+      "left": false
+    },
+    {
+      "name": "Priya Anand",
+      "first_name": "Priya",
+      "last_name": "Anand",
+      "function": "Sales",
+      "role": "Account Executive",
+      "reports_to": "Diane Okafor",
+      "start_date": "2023-04-17",
+      "tenure_at_period_end": "3.3 yrs",
+      "left": false
+    },
+    {
+      "name": "Jonah Fischer",
+      "first_name": "Jonah",
+      "last_name": "Fischer",
+      "function": "Sales",
+      "role": "Account Executive",
+      "reports_to": "Diane Okafor",
+      "start_date": "2025-02-03",
+      "tenure_at_period_end": "1.5 yrs",
+      "left": false
+    },
+    {
+      "name": "Ester Malik",
+      "first_name": "Ester",
+      "last_name": "Malik",
+      "function": "Sales",
+      "role": "SDR",
+      "reports_to": "Diane Okafor",
+      "start_date": "2024-08-19",
+      "tenure_at_period_end": "1.9 yrs",
+      "left": false
+    },
+    {
+      "name": "Tomas Bright",
+      "first_name": "Tomas",
+      "last_name": "Bright",
+      "function": "Sales",
+      "role": "SDR",
+      "reports_to": "Diane Okafor",
+      "start_date": "2025-05-05",
+      "tenure_at_period_end": "1.2 yrs",
+      "left": false
+    },
+    {
+      "name": "Helena Cho",
+      "first_name": "Helena",
+      "last_name": "Cho",
+      "function": "Customer Success & Delivery",
+      "role": "Head of Customer Success & Delivery",
+      "reports_to": "Marcus Ihejirika",
+      "start_date": "2021-09-06",
+      "tenure_at_period_end": "4.9 yrs",
+      "left": false
+    },
+    {
+      "name": "Adaeze Nwosu",
+      "first_name": "Adaeze",
+      "last_name": "Nwosu",
+      "function": "Customer Success & Delivery",
+      "role": "Implementation Specialist",
+      "reports_to": "Helena Cho",
+      "start_date": "2022-05-16",
+      "tenure_at_period_end": "4.2 yrs",
+      "left": false
+    },
+    {
+      "name": "Ben Lockwood",
+      "first_name": "Ben",
+      "last_name": "Lockwood",
+      "function": "Customer Success & Delivery",
+      "role": "Implementation Specialist",
+      "reports_to": "Helena Cho",
+      "start_date": "2023-11-13",
+      "tenure_at_period_end": "2.7 yrs",
+      "left": false
+    },
+    {
+      "name": "Ruth Padgett",
+      "first_name": "Ruth",
+      "last_name": "Padgett",
+      "function": "Customer Success & Delivery",
+      "role": "Implementation Specialist",
+      "reports_to": "Helena Cho",
+      "start_date": "2025-01-06",
+      "tenure_at_period_end": "1.6 yrs",
+      "left": false
+    },
+    {
+      "name": "Sam Okonkwo",
+      "first_name": "Sam",
+      "last_name": "Okonkwo",
+      "function": "Customer Success & Delivery",
+      "role": "Support Lead",
+      "reports_to": "Helena Cho",
+      "start_date": "2022-02-14",
+      "tenure_at_period_end": "4.5 yrs",
+      "left": false
+    },
+    {
+      "name": "Ines Torres",
+      "first_name": "Ines",
+      "last_name": "Torres",
+      "function": "Customer Success & Delivery",
+      "role": "Support Rep",
+      "reports_to": "Sam Okonkwo",
+      "start_date": "2023-06-05",
+      "tenure_at_period_end": "3.2 yrs",
+      "left": false
+    },
+    {
+      "name": "Deshawn Riley",
+      "first_name": "Deshawn",
+      "last_name": "Riley",
+      "function": "Customer Success & Delivery",
+      "role": "Support Rep",
+      "reports_to": "Sam Okonkwo",
+      "start_date": "2024-10-21",
+      "tenure_at_period_end": "1.8 yrs",
+      "left": false
+    },
+    {
+      "name": "Lior Ben-David",
+      "first_name": "Lior",
+      "last_name": "Ben-David",
+      "function": "Engineering & Product",
+      "role": "Head of Engineering",
+      "reports_to": "Renata Voss",
+      "start_date": "2020-04-20",
+      "tenure_at_period_end": "6.3 yrs",
+      "left": false
+    },
+    {
+      "name": "Grace Whitfield",
+      "first_name": "Grace",
+      "last_name": "Whitfield",
+      "function": "Engineering & Product",
+      "role": "Product Manager",
+      "reports_to": "Lior Ben-David",
+      "start_date": "2021-11-08",
+      "tenure_at_period_end": "4.7 yrs",
+      "left": false
+    },
+    {
+      "name": "Owen Mbeki",
+      "first_name": "Owen",
+      "last_name": "Mbeki",
+      "function": "Engineering & Product",
+      "role": "Product Manager",
+      "reports_to": "Lior Ben-David",
+      "start_date": "2024-02-12",
+      "tenure_at_period_end": "2.5 yrs",
+      "left": false
+    },
+    {
+      "name": "Ana Kowalski",
+      "first_name": "Ana",
+      "last_name": "Kowalski",
+      "function": "Engineering & Product",
+      "role": "Senior Engineer",
+      "reports_to": "Lior Ben-David",
+      "start_date": "2020-08-03",
+      "tenure_at_period_end": "6.0 yrs",
+      "left": false
+    },
+    {
+      "name": "Femi Adekunle",
+      "first_name": "Femi",
+      "last_name": "Adekunle",
+      "function": "Engineering & Product",
+      "role": "Engineer",
+      "reports_to": "Lior Ben-David",
+      "start_date": "2022-07-11",
+      "tenure_at_period_end": "4.0 yrs",
+      "left": false
+    },
+    {
+      "name": "Nadia Petrov",
+      "first_name": "Nadia",
+      "last_name": "Petrov",
+      "function": "Engineering & Product",
+      "role": "Engineer",
+      "reports_to": "Lior Ben-David",
+      "start_date": "2023-02-27",
+      "tenure_at_period_end": "3.4 yrs",
+      "left": false
+    },
+    {
+      "name": "Colm Brennan",
+      "first_name": "Colm",
+      "last_name": "Brennan",
+      "function": "Engineering & Product",
+      "role": "Engineer",
+      "reports_to": "Lior Ben-David",
+      "start_date": "2023-09-04",
+      "tenure_at_period_end": "2.9 yrs",
+      "left": false
+    },
+    {
+      "name": "Wei Zhang",
+      "first_name": "Wei",
+      "last_name": "Zhang",
+      "function": "Engineering & Product",
+      "role": "Engineer",
+      "reports_to": "Lior Ben-David",
+      "start_date": "2024-06-10",
+      "tenure_at_period_end": "2.1 yrs",
+      "left": true
+    },
+    {
+      "name": "Yusuf Demir",
+      "first_name": "Yusuf",
+      "last_name": "Demir",
+      "function": "Engineering & Product",
+      "role": "Junior Engineer",
+      "reports_to": "Lior Ben-David",
+      "start_date": "2025-09-01",
+      "tenure_at_period_end": "0.9 yrs",
+      "left": false
+    },
+    {
+      "name": "Sofia Marchetti",
+      "first_name": "Sofia",
+      "last_name": "Marchetti",
+      "function": "Engineering & Product",
+      "role": "QA Lead",
+      "reports_to": "Lior Ben-David",
+      "start_date": "2022-10-17",
+      "tenure_at_period_end": "3.8 yrs",
+      "left": false
+    },
+    {
+      "name": "Harriet Doyle",
+      "first_name": "Harriet",
+      "last_name": "Doyle",
+      "function": "Finance & People Ops",
+      "role": "Head of Finance & People Ops",
+      "reports_to": "Renata Voss",
+      "start_date": "2020-11-02",
+      "tenure_at_period_end": "5.7 yrs",
+      "left": false
+    },
+    {
+      "name": "Victor Adeyemi",
+      "first_name": "Victor",
+      "last_name": "Adeyemi",
+      "function": "Finance & People Ops",
+      "role": "Financial Controller",
+      "reports_to": "Harriet Doyle",
+      "start_date": "2022-03-14",
+      "tenure_at_period_end": "4.4 yrs",
+      "left": false
+    },
+    {
+      "name": "Naomi Kessler",
+      "first_name": "Naomi",
+      "last_name": "Kessler",
+      "function": "Finance & People Ops",
+      "role": "People Ops Lead",
+      "reports_to": "Harriet Doyle",
+      "start_date": "2021-05-24",
+      "tenure_at_period_end": "5.2 yrs",
+      "left": false
+    },
+    {
+      "name": "Paul Vasquez",
+      "first_name": "Paul",
+      "last_name": "Vasquez",
+      "function": "Finance & People Ops",
+      "role": "Office & IT Ops Coordinator",
+      "reports_to": "Harriet Doyle",
+      "start_date": "2023-08-08",
+      "tenure_at_period_end": "3.0 yrs",
+      "left": false
+    }
+  ]
+}

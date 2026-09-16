@@ -1,0 +1,66 @@
+{
+  "assessment_date": "2026-07-31",
+  "notes": "Human-scored claims from the iLab 14-01 sheet. Used to test retrieval, not as gold probabilities.",
+  "claims": [
+    {
+      "claim_id": "P1-F1",
+      "layer": "formal",
+      "process": "P1 Discount approval",
+      "claim_text": "Head of Finance and People Ops must approve new-business discounts of 15 percent or more in the CRM before Closed Won.",
+      "expected_status": "Supported",
+      "expected_confidence": "High",
+      "expected_supporting_doc_ids": ["POL-01", "MTG-01", "INT-02", "INT-03"],
+      "expected_contradicting_or_caveat_doc_ids": ["PROC-02"]
+    },
+    {
+      "claim_id": "P1-P1",
+      "layer": "practised",
+      "process": "P1 Discount approval",
+      "claim_text": "Every new-business discount of 15 percent or more is approved by Finance in the CRM before close, with no exceptions.",
+      "expected_status": "Conflicted",
+      "expected_confidence": "High",
+      "expected_supporting_doc_ids": ["POL-01", "INT-02", "CRM-DEALS"],
+      "expected_contradicting_or_caveat_doc_ids": ["COMMUNICATIONS-LOG"]
+    },
+    {
+      "claim_id": "P1-S1",
+      "layer": "stale leftover",
+      "process": "P1 Discount approval",
+      "claim_text": "The Financial Controller Victor is the accountable approver for discounts at or above threshold.",
+      "expected_status": "Unsupported",
+      "expected_confidence": "High",
+      "expected_supporting_doc_ids": ["PROC-02"],
+      "expected_contradicting_or_caveat_doc_ids": ["POL-01", "MTG-01"]
+    },
+    {
+      "claim_id": "P1-P2",
+      "layer": "practised",
+      "process": "P1 Discount approval",
+      "claim_text": "On genuinely urgent deals, Head of Sales may approve discounts of 15 percent or more outside the CRM, with paperwork later.",
+      "expected_status": "Conflicted",
+      "expected_confidence": "Medium",
+      "expected_supporting_doc_ids": ["COMMUNICATIONS-LOG", "MTG-02", "INT-02"],
+      "expected_contradicting_or_caveat_doc_ids": ["POL-01"]
+    },
+    {
+      "claim_id": "C09",
+      "layer": "formal",
+      "process": "P2 Onboarding",
+      "claim_text": "New customer onboarding follows a standard 6-week implementation process owned by the Customer Success and Delivery team.",
+      "expected_status": "Likely",
+      "expected_confidence": "Medium",
+      "expected_supporting_doc_ids": ["POL-03", "PROC-01"],
+      "expected_contradicting_or_caveat_doc_ids": []
+    },
+    {
+      "claim_id": "C27",
+      "layer": "formal",
+      "process": "P3 Escalation",
+      "claim_text": "Customer-reported issues are escalated from Support to Engineering via a ticket in the support system, following a documented severity-based escalation path.",
+      "expected_status": "Likely",
+      "expected_confidence": "Medium",
+      "expected_supporting_doc_ids": ["PROC-05"],
+      "expected_contradicting_or_caveat_doc_ids": []
+    }
+  ]
+}
