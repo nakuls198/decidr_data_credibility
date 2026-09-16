@@ -60,16 +60,16 @@ def classify_stance(claim_text: str, evidence_text: str) -> Tuple[str, float]:
     overlap_ratio = len(overlap) / max(1, len(claim_tokens))
 
     if overlap_ratio < 0.15:
-        return "unrelated", round(1 - overlap_ratio, 2)
+        return "unrelated", float(1 - overlap_ratio)
 
     evidence_lower = evidence_text.lower()
     has_negation = any(cue in evidence_lower for cue in NEGATION_CUES)
 
     if has_negation:
         # weak signal: related + a contrast/negation cue nearby -> guess contradiction
-        return "contradict", round(min(0.4 + overlap_ratio, 0.75), 2)
+        return "contradict", float(min(0.4 + overlap_ratio, 0.75))
 
-    return "support", round(min(0.4 + overlap_ratio, 0.8), 2)
+    return "support", float(min(0.4 + overlap_ratio, 0.8))
 
 
 def reason_over_hits(claim_text: str, hits) -> list:

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Northfield Rulebook v1.0</title>
+<style>
+  :root {
+    --bg: #141210;
+    --panel: #1e1b18;
+    --line: #3a322c;
+    --orange: #ff6a12;
+    --cream: #f3ebe3;
+    --muted: #a8988c;
+    --ok: #3d9a6a;
+    --warn: #d4a017;
+    --bad: #c44b3c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Segoe UI", system-ui, sans-serif;
+    background: radial-gradient(1200px 600px at 10% -10%, #2a1f18, var(--bg));
+    color: var(--cream);
+    line-height: 1.45;
+  }
+  header {
+    padding: 2rem 1.5rem 1rem;
+    border-bottom: 1px solid var(--line);
+  }
+  header h1 { margin: 0 0 .35rem; font-size: 1.75rem; letter-spacing: .02em; }
+  header p { margin: .2rem 0; color: var(--muted); max-width: 52rem; }
+  .badge {
+    display: inline-block;
+    background: rgba(255,106,18,.15);
+    color: var(--orange);
+    border: 1px solid rgba(255,106,18,.4);
+    padding: .15rem .55rem;
+    border-radius: 999px;
+    font-size: .75rem;
+    margin-right: .35rem;
+  }
+  main { padding: 1.25rem 1.5rem 3rem; max-width: 1100px; }
+  h2 { color: var(--orange); margin-top: 2rem; border-bottom: 1px solid var(--line); padding-bottom: .35rem; }
+  h3 { margin-top: 1.4rem; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: .75rem; }
+  .card {
+    background: linear-gradient(160deg, rgba(255,106,18,.08), transparent 40%), var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: .9rem 1rem;
+  }
+  .card h4 { margin: 0 0 .4rem; color: var(--orange); font-size: .95rem; }
+  .card p, .card li { font-size: .86rem; color: var(--cream); }
+  .card ul { margin: .3rem 0 0; padding-left: 1.1rem; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: .82rem;
+    margin: .6rem 0 1rem;
+  }
+  th, td {
+    border: 1px solid var(--line);
+    padding: .45rem .55rem;
+    text-align: left;
+    vertical-align: top;
+  }
+  th { background: #2a241f; color: var(--orange); }
+  tr:nth-child(even) td { background: rgba(255,255,255,.02); }
+  code { color: #ffb380; font-size: .8rem; }
+  .tag-rule { color: var(--ok); font-weight: 600; }
+  .tag-happened { color: #6eb6ff; font-weight: 600; }
+  .tag-practice { color: var(--warn); font-weight: 600; }
+  .tag-gap { color: var(--bad); font-weight: 600; }
+  .cluster {
+    border-left: 3px solid var(--orange);
+    padding-left: .9rem;
+    margin: 1.2rem 0 1.8rem;
+  }
+  footer { color: var(--muted); font-size: .8rem; margin-top: 2rem; }
+  a { color: var(--orange); }
+</style>
+</head>
+<body>
+<header>
+  <span class="badge">v1.0</span>
+  <span class="badge">Assessment 31 Jul 2026</span>
+  <span class="badge">Do not edit Streamlit</span>
+  <h1>Northfield Rulebook</h1>
+  <p>Cross-reference map on top of Data Atlas. For each process: linked files, supersession, and which source wins by dispute type. Built from <code>documents.jsonl</code>, the claims register, and Kai/Bianca guidance (CRM for occurrence; no single-variable formality).</p>
+</header>
+<main>
+
+<h2>1. Dispute winners (always)</h2>
+<div class="grid">
+  <div class="card">
+    <h4 class="tag-rule">RULE</h4>
+    <p>What is the written rule?</p>
+    <ul>
+      <li>Winner: approved in-force policy</li>
+      <li>Demote: superseded, draft, stale process</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h4 class="tag-happened">HAPPENED</h4>
+    <p>Was it recorded?</p>
+    <ul>
+      <li>Winner: <b>CRM</b> (Kai)</li>
+      <li>Demote: Slack/interview vs CRM field</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h4 class="tag-practice">PRACTICE</h4>
+    <p>What do people do?</p>
+    <ul>
+      <li>Winner: meeting + actors + CRM exceptions</li>
+      <li>Copied Slack = <b>one</b> source</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h4 class="tag-gap">GAP</h4>
+    <p>Is anyone assigned?</p>
+    <ul>
+      <li>If decision-rights empty → gap</li>
+      <li>Do not invent an owner</li>
+    </ul>
+  </div>
+</div>
+
+<h2>2. Supersession board</h2>
+<table>
+  <tr><th>Doc</th><th>Status</th><th>Outranked by</th></tr>
+  <tr><td><code>POL-01</code></td><td>In force (15%, Harriet)</td><td>—</td></tr>
+  <tr><td><code>POL-02</code></td><td>Superseded</td><td>POL-01</td></tr>
+  <tr><td><code>PROC-02</code></td><td>Stale leftover (Victor)</td><td>POL-01 for RULE</td></tr>
+  <tr><td><code>POL-04</code></td><td>DRAFT — not in force</td><td>Must not beat PROC-05</td></tr>
+  <tr><td><code>PROC-03</code> Trello</td><td>Stale tooling</td><td>Linear ops (MTG-03)</td></tr>
+  <tr><td><code>ORG-CHART-2023-02-SUPERSEDED</code></td><td>Superseded</td><td>ORG-CHART-AND-ROSTER</td></tr>
+</table>
+
+<h2>3. Process clusters (P1–P8)</h2>
+
+<div class="cluster">
+  <h3>P1 · Discount approval</h3>
+  <p><b>Must fetch:</b> POL-01, POL-02, PROC-02, MTG-01, MTG-02, INT-02/03/09, CRM-DEALS, COMMS-01–05, DECISION-RIGHTS-TABLE</p>
+  <p><b>Deals:</b> DEAL-014, 027, 041 (exceptions) · <b>Copies:</b> COMMS-02/03/04 = one Diane bypass</p>
+  <p><span class="tag-rule">RULE</span> POL-01 · <span class="tag-happened">HAPPENED</span> CRM · <span class="tag-practice">PRACTICE</span> MTG-02 + Slack once + CRM exceptions → often Conflicted</p>
+</div>
+
+<div class="cluster">
+  <h3>P2 · Customer onboarding</h3>
+  <p><b>Must fetch:</b> POL-03, PROC-01, INT-06, PROJECT-TASKS, COMMS-13, DECISION-RIGHTS-TABLE</p>
+  <p><span class="tag-rule">RULE</span> 6-week CS path · <span class="tag-gap">GAP</span> extension approver unnamed · <span class="tag-practice">PRACTICE</span> shadow checklist Conflicted</p>
+</div>
+
+<div class="cluster">
+  <h3>P3 · Feature intake</h3>
+  <p><b>Must fetch:</b> PROC-03, MTG-03, INT-10, COMMS-11, PROJECT-TASKS</p>
+  <p>Trello = stale doc · Linear since Apr 2025 = practice · PM split = gap</p>
+</div>
+
+<div class="cluster">
+  <h3>P4 · Expenses</h3>
+  <p><b>Must fetch:</b> POL-07, PROC-04, MTG-09, INT-03, INT-06, COMMS-09</p>
+  <p><span class="tag-rule">RULE</span> &gt;$500 Harriet · Practice: onboarding travel / manager overrides</p>
+</div>
+
+<div class="cluster">
+  <h3>P5 · Support escalation</h3>
+  <p><b>Must fetch:</b> PROC-05, POL-04, MTG-04, INT-07/08, COMMS-06/07</p>
+  <p><span class="tag-rule">RULE</span> PROC-05 · POL-04 draft never “approved” · Slack-first practised · close rule Conflicted</p>
+</div>
+
+<div class="cluster">
+  <h3>P6 · New-hire onboarding</h3>
+  <p><b>Must fetch:</b> POL-08, COMMS-12, DECISION-RIGHTS-TABLE</p>
+  <p>2-week checklist People Ops · remote gap in policy wording</p>
+</div>
+
+<div class="cluster">
+  <h3>P7 · Billing / CRM–billing</h3>
+  <p><b>Must fetch:</b> ROLE-DESCRIPTIONS, DECISION-RIGHTS-TABLE, MTG-07, INT-10, COMMS-07/14/15, CRM-DEALS, DEAL-050</p>
+  <p>Ana key-person · Feb 2026 sign-off Unlikely · Closed Won↔invoice break</p>
+</div>
+
+<div class="cluster">
+  <h3>P8 · Renewals</h3>
+  <p><b>Must fetch:</b> POL-06, PROC-07, MTG-05, MTG-10, COMMS-10, DEAL-063/064, DECISION-RIGHTS-TABLE</p>
+  <p><span class="tag-rule">RULE</span> 10% cap · Practice breaks (18%, 12%) · <span class="tag-gap">GAP</span> Sales vs CS tie-break</p>
+</div>
+
+<h2>4. Machine files</h2>
+<ul>
+  <li><code>rulebook_process_master.csv</code> — one row per process</li>
+  <li><code>rulebook_layer_rows.csv</code> — formal / practised / stale / draft / gap</li>
+  <li><code>rulebook_dispute_rules.csv</code> — dispute → winner</li>
+  <li><code>NORTHFIELD_RULEBOOK.md</code> — full text twin of this page</li>
+</ul>
+
+<footer>
+  iLab 14-01 · Rely on Atlas doc_ids only · Conflicted is a finished answer · Streamlit app not modified
+</footer>
+</main>
+</body>
+</html>

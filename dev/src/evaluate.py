@@ -34,7 +34,7 @@ def recall_at_k(retriever: BM25Retriever, claim_text: str, expected_doc_ids: Lis
     hits = retriever.search(claim_text, top_k=top_k)
     found_doc_ids = {h.doc_id for h in hits}
     hit_count = sum(1 for d in expected_doc_ids if d in found_doc_ids)
-    return round(hit_count / len(expected_doc_ids), 3)
+    return float(hit_count / len(expected_doc_ids))
 
 
 def run(chunks_path: str, gold_path: str, top_k: int = 15) -> None:

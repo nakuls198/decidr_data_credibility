@@ -16,10 +16,15 @@ from src.retrieve import BM25Retriever, tokenize
 from src.reason import classify_stance, reason_over_hits
 from src.weight import apply_weights, AUTHORITY_WEIGHTS
 from src.score import score_claim
-from src.explain import explain_template
+from src.explain import explain_structured
 from src.extract import extract_claims_rule_based
 from src.calibrate import enough_labels_to_calibrate
 from src.evaluate import recall_at_k
+from src.rulebook import Rulebook
+from src.retrieve import RetrievalHit
+from src import llm_explain
+
+RULEBOOK = Rulebook(ROOT / "rulebook")
 
 
 def load_chunks() -> list[Chunk]:
@@ -80,6 +85,36 @@ def candidate_claims(chunks: list[Chunk], limit: int = 40) -> tuple[list[dict], 
     return out, len(claims)
 
 
+def _inject_must_fetch(
+    hits: list[RetrievalHit],
+    chunks: list[Chunk],
+    must_fetch: list[str],
+) -> list[RetrievalHit]:
+    """Rulebook Step D: ensure linked-set doc IDs appear in retrieval."""
+    seen = {h.doc_id.upper() for h in hits}
+    by_doc: dict[str, Chunk] = {}
+    for c in chunks:
+        key = c.doc_id.upper()
+        if key not in by_doc:
+            by_doc[key] = c
+    for doc_id in must_fetch:
+        key = doc_id.upper()
+        if key in seen or key not in by_doc:
+            continue
+        c = by_doc[key]
+        hits.append(
+            RetrievalHit(
+                chunk_id=c.chunk_id,
+                doc_id=c.doc_id,
+                source_type=c.source_type,
+                score=0.01,
+                text=c.text,
+            )
+        )
+        seen.add(key)
+    return sorted(hits, key=lambda h: h.score, reverse=True)
+
+
 def run_claim(
     claim_text: str,
     claim_id: str,
@@ -88,8 +123,15 @@ def run_claim(
     top_k: int = 15,
     prior: float = 0.5,
     method: str = "bayesian",
+    use_llm: bool = False,
 ) -> dict[str, Any]:
+    dispute_type = RULEBOOK.guess_dispute_type(claim_text)
+    must_fetch = RULEBOOK.must_fetch_ids(claim_text, dispute_type)
+    guidance = RULEBOOK.dispute_guidance(dispute_type)
+
     hits = retriever.search(claim_text, top_k=top_k)
+    hits = _inject_must_fetch(hits, chunks, must_fetch)
+
     hit_rows = []
     for h in hits:
         stance, conf = classify_stance(claim_text, h.text)
@@ -98,9 +140,9 @@ def run_claim(
                 "chunk_id": h.chunk_id,
                 "doc_id": h.doc_id,
                 "source_type": h.source_type,
-                "retrieval_score": round(float(h.score), 4),
+                "retrieval_score": float(h.score),
                 "stance": stance,
-                "stance_confidence": conf,
+                "stance_confidence": float(conf),
                 "text": h.text,
                 "kept": stance != "unrelated",
             }
@@ -109,12 +151,40 @@ def run_claim(
     reasoned = reason_over_hits(claim_text, hits)
     superseded_lookup = {c.doc_id: bool(c.metadata.get("superseded", False)) for c in chunks}
     weighted = apply_weights(reasoned, superseded_lookup=superseded_lookup)
+
+    for row in weighted:
+        boost = RULEBOOK.boost_for_doc(row["doc_id"], dispute_type, claim_text)
+        row["rulebook_boost"] = boost
+        row["final_weight"] = float(row["final_weight"] * boost)
+
     scored = score_claim(weighted, prior=prior, method=method)
-    explanation = explain_template(claim_text, scored, weighted)
+    explanation_struct = explain_structured(claim_text, scored, weighted)
+
+    rulebook_note = guidance.get("kai_bianca_note") or guidance.get("winner_sources") or ""
+    if use_llm or __import__("os").environ.get("OPENAI_API_KEY"):
+        explain_out = llm_explain.explain_with_llm(
+            claim_text,
+            scored,
+            weighted,
+            dispute_type=dispute_type,
+            must_fetch=must_fetch,
+            rulebook_note=rulebook_note,
+        )
+    else:
+        explain_out = llm_explain.explain_with_llm(
+            claim_text,
+            scored,
+            weighted,
+            dispute_type=dispute_type,
+            must_fetch=must_fetch,
+            rulebook_note=rulebook_note,
+        )
 
     return {
         "claim_id": claim_id,
         "claim_text": claim_text,
+        "dispute_type": dispute_type,
+        "must_fetch": must_fetch,
         "method": method,
         "prior": prior,
         "top_k": top_k,
@@ -122,11 +192,14 @@ def run_claim(
         "hits": hit_rows,
         "weighted": weighted,
         "scored": scored,
-        "explanation": explanation,
+        "explanation": explain_out["narrative"],
+        "explanation_rich": explain_out.get("structured") or explanation_struct,
+        "thought_process": explain_out.get("thought_process", []),
+        "explain_source": explain_out.get("source", "template"),
         "n_retrieved": len(hits),
         "n_kept": len(weighted),
         "n_dropped": len(hits) - len(weighted),
-        "calibration": enough_labels_to_calibrate(4)[1],
+        "calibration": enough_labels_to_calibrate(len(load_gold().get("claims", [])))[1],
     }
 
 

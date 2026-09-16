@@ -1,0 +1,27 @@
+project:
+  name: "Northfield Credibility Studio"
+  group: "iLab 14-01"
+  partner: "Decidr"
+  assessment_date: "2026-07-31"
+
+data:
+  phase1_dir: "data/raw/phase1/northfield"
+  phase2_dir: "data/raw/phase2/northfield"
+  combined_dir: "data/combined"
+  outputs_dir: "data/outputs"
+  gold_path: "data/gold/gold_claims.json"
+
+pipeline:
+  top_k: 15
+  prior: 0.5
+  scoring_method: "bayesian"  # bayesian | weighted_checklist
+
+rulebook:
+  process_master: "rulebook/rulebook_process_master.csv"
+  dispute_rules: "rulebook/rulebook_dispute_rules.csv"
+  layer_rows: "rulebook/rulebook_layer_rows.csv"
+
+llm:
+  enabled: false
+  model: "gpt-4o-mini"
+  # Set OPENAI_API_KEY in environment to enable LLM explanations

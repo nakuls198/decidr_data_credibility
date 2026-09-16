@@ -2,9 +2,11 @@
 from __future__ import annotations
 
 import math
+from html import escape
 
 import streamlit as st
 
+from services.format_num import full_num
 from ui.styles import badge
 
 
@@ -20,7 +22,7 @@ def hero(eyebrow: str, title: str, body: str) -> None:
 def _tile(value: str, label: str, variant: str = "dark") -> str:
     cls = "tile tile-orange" if variant == "orange" else "tile"
     return (
-        f'<div class="{cls}"><div class="kpi">{value}</div>'
+        f'<div class="{cls}"><div class="kpi num-full">{value}</div>'
         f'<div class="kpi-label">{label}</div></div>'
     )
 
@@ -85,16 +87,61 @@ def orange_note(title: str, body: str) -> None:
 def status_line(status: str, score: float, confidence: str, interval=None) -> None:
     rng = "—"
     if interval:
-        rng = f"{interval[0]:.2f}–{interval[1]:.2f}"
+        rng = f"{full_num(interval[0])} – {full_num(interval[1])}"
     mixed_kpis(
         [
-            (status, "Verdict", "orange"),
-            (f"{score:.2f}", "Score", "dark"),
-            (confidence, "Confidence", "dark"),
+            (escape(str(status)), "Verdict", "orange"),
+            (full_num(score), "Score", "dark"),
+            (escape(str(confidence)), "Confidence", "dark"),
             (rng, "Interval", "orange"),
         ]
     )
     st.markdown(f"{badge(status)} {badge(confidence)}", unsafe_allow_html=True)
+
+
+def insight_panel(rich: dict) -> None:
+    """Glorified, glanceable explanation of a scored claim."""
+    if not rich:
+        return
+    paras = "".join(
+        f'<p class="body-p">{escape(p)}</p>' for p in rich.get("paragraphs", [])
+    )
+    raised_items = rich.get("raised") or []
+    lowered_items = rich.get("lowered") or []
+
+    def _lis(rows):
+        if not rows:
+            return "<li>None of weight.</li>"
+        out = []
+        for r in rows:
+            out.append(
+                "<li><span class='wt'>"
+                + escape(str(r.get("doc_id")))
+                + "</span> · "
+                + escape(str(r.get("type") or ""))
+                + " · weight <span class='wt num-full'>"
+                + escape(full_num(r.get("weight")))
+                + "</span><br><span style='color:#8A8A8A;font-size:0.82rem;'>"
+                + escape(str(r.get("preview") or "")[:160])
+                + "</span></li>"
+            )
+        return "".join(out)
+
+    html = (
+        '<div class="insight-card">'
+        '<div class="eyebrow">Result · read this first</div>'
+        f'<h2>{escape(rich.get("headline") or "")}</h2>'
+        f'<p class="lead">{escape(rich.get("insight") or "")}</p>'
+        f"{paras}"
+        '<div class="insight-split">'
+        '<div class="insight-pane"><h4>Raised the score</h4><ul style="margin:0;padding-left:1.1rem;">'
+        + _lis(raised_items)
+        + "</ul></div>"
+        '<div class="insight-pane"><h4>Lowered the score</h4><ul style="margin:0;padding-left:1.1rem;">'
+        + _lis(lowered_items)
+        + "</ul></div></div></div>"
+    )
+    st.markdown(html, unsafe_allow_html=True)
 
 
 def stages_strip() -> None:

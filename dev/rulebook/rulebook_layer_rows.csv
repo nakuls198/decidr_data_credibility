@@ -1,0 +1,27 @@
+topic_id,parent_process,layer,claim_focus,must_fetch_doc_ids,must_fetch_deal_ids,must_fetch_comms_ids,dispute_type,expected_human_status,confidence_note,copied_cluster
+P1-F,P1,formal,Head of Finance approves new-business >=15% in CRM before Closed Won,"POL-01;MTG-01;INT-02;INT-03;PROC-02 (caveat only)",—,—,RULE,Supported,High; PROC-02 does not outrank POL-01,—
+P1-S,P1,stale,Financial Controller Victor is accountable discount approver,"PROC-02;POL-01;MTG-01",—,—,RULE,Unsupported as current rule,High as leftover description,—
+P1-P-no-exceptions,P1,practised,Every >=15% deal Finance-approved in CRM with no exceptions,"POL-01;INT-02;CRM-DEALS;COMMUNICATIONS-LOG","DEAL-014;DEAL-027;DEAL-041","COMMS-01;COMMS-02;COMMS-03;COMMS-04",PRACTICE+HAPPENED,Conflicted,High; CRM settles whether approval recorded,P1-DIANE-BYPASS
+P1-P-urgent,P1,practised,On urgent deals Head of Sales may approve >=15% outside CRM,"MTG-02;INT-02;INT-03;POL-01;CRM-DEALS","DEAL-014;DEAL-041","COMMS-01;COMMS-02;COMMS-03;COMMS-04",PRACTICE,Likely vs formal Conflicted,High; copies count once,P1-DIANE-BYPASS
+P1-P-10pct,P1,practised_belief,Staff currently treat Finance threshold as 10%,"COMMS-05;INT-05;POL-01;MTG-01",—,"COMMS-05",PRACTICE vs RULE,Belief Likely; rule Unlikely,High,—
+P2-F,P2,formal,Standard 6-week CS-owned onboarding,"POL-03;PROC-01;INT-06",—,—,RULE,Supported,High,—
+P2-G,P2,gap,Who may approve 6-week deviation is formally assigned,"POL-03;DECISION-RIGHTS-TABLE;INT-06",—,—,GAP,Unsupported (gap),High,—
+P2-P,P2,practised,Project system is complete picture of onboarding effort,"POL-03;INT-06;PROJECT-TASKS;COMMUNICATIONS-LOG",—,COMMS-13,PRACTICE,Conflicted,High,—
+P3-F-trello,P3,formal_stale,Feature requests captured on Trello,"PROC-03;MTG-03;INT-10;COMMUNICATIONS-LOG",—,COMMS-11,RULE vs PRACTICE,Doc Supported; ops Unlikely after Apr 2025,High,—
+P3-P-linear,P3,practised,Feature requests tracked in Linear since Apr 2025,"MTG-03;INT-10;PROJECT-TASKS;COMMUNICATIONS-LOG",—,COMMS-11,PRACTICE,Supported,High,—
+P3-G,P3,gap,Documented PM split / Product vs Eng tie-break,"PROC-03;INT-10;DECISION-RIGHTS-TABLE",—,—,GAP,Unsupported,High,—
+P4-F,P4,formal,Expenses >$500 need Head of Finance; <=$500 manager,"POL-07;PROC-04",—,—,RULE,Supported,High,—
+P4-P-travel,P4,practised,Onboarding-visit travel booked without Finance sign-off,"PROC-04;INT-06;INT-03;POL-07",—,—,PRACTICE,Likely,High,—
+P4-P-manager,P4,practised,Some >$500 approved by manager or Head of Eng,"MTG-09;INT-03;POL-07;COMMUNICATIONS-LOG",—,COMMS-09,PRACTICE,Likely,Medium,—
+P5-F,P5,formal,Ticket-first severity escalation path,"PROC-05",—,—,RULE,Supported as written,High,—
+P5-D,P5,draft,POL-04 v2 is the approved support process,"POL-04;MTG-04;COMMUNICATIONS-LOG",—,"COMMS-06",RULE,Unsupported as approved,High; pilot is separate,—
+P5-P-slack,P5,practised,Sev 1 Slack-first then ticket,"PROC-05;INT-07;INT-08;INT-10;COMMUNICATIONS-LOG",—,COMMS-07,PRACTICE,Likely,High,—
+P5-P-close,P5,practised,Reps close escalated tickets without Engineering,"PROC-05;INT-07;INT-08;POL-04",—,—,PRACTICE,Conflicted,High,—
+P6-F,P6,formal,New hires complete checklist in first two weeks; People Ops owns,"POL-08;DECISION-RIGHTS-TABLE;COMMUNICATIONS-LOG",—,COMMS-12,RULE,Supported,High,—
+P7-F,P7,formal,Billing-touching production changes need Head of Eng,"ROLE-DESCRIPTIONS;DECISION-RIGHTS-TABLE;PROC-06",—,—,RULE,Likely,Medium (roles not POL-xx),—
+P7-P-feb2026,P7,practised,Feb 2026 billing fix had clear Eng sign-off,"MTG-07;INT-10;DECISION-RIGHTS-TABLE;COMMUNICATIONS-LOG",—,COMMS-07,HAPPENED+PRACTICE,Unlikely,High,—
+P7-P-ana,P7,practised,Ana Kowalski sole CRM-billing production knowledge,"INT-10;MTG-07;MTG-08;COMMUNICATIONS-LOG",—,"COMMS-14",PRACTICE,Supported,High,—
+P7-P-match,P7,practised,Every Closed Won has matching invoice and onboarding project,"CRM-DEALS;COMMUNICATIONS-LOG;PROJECT-TASKS",DEAL-050,COMMS-15,HAPPENED,Unlikely,Medium,—
+P8-F,P8,formal,Renewal discounts capped at 10% with no exceptions,"POL-06",—,—,RULE,Supported as written,High; review overdue note,—
+P8-P-cap,P8,practised,All renewal discounts stay within 10%,"POL-06;CRM-DEALS;MTG-10;COMMUNICATIONS-LOG","DEAL-063",COMMS-10,PRACTICE+HAPPENED,Unsupported,High,—
+P8-G,P8,gap,Named role has final call when Sales and CS disagree,"PROC-07;DECISION-RIGHTS-TABLE;MTG-05;CRM-DEALS;INT-02",DEAL-064,—,GAP,Unsupported (gap),High,—

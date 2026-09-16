@@ -45,7 +45,7 @@ def weighted_checklist_score(weighted_evidence: List[Dict[str, Any]]) -> float:
     total = support_w + contradict_w
     if total == 0:
         return 0.5   # no signal either way
-    return round(support_w / total, 4)
+    return float(support_w / total)
 
 
 def bayesian_log_odds_score(weighted_evidence: List[Dict[str, Any]], prior: float = 0.5) -> float:
@@ -65,7 +65,7 @@ def bayesian_log_odds_score(weighted_evidence: List[Dict[str, Any]], prior: floa
         sign = 1 if e["stance"] == "support" else -1
         logit += sign * e["final_weight"]
     posterior = 1 / (1 + math.exp(-logit))
-    return round(posterior, 4)
+    return float(posterior)
 
 
 def credible_interval(weighted_evidence: List[Dict[str, Any]], prior: float = 0.5,

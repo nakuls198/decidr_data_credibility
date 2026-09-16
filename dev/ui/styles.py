@@ -232,6 +232,73 @@ hr { border-color: #1F1F1F !important; }
 .small { color: #A3A3A3; font-size: 0.86rem; line-height: 1.5; }
 .small b { color: #FFFFFF; }
 
+.insight-card {
+  background:
+    radial-gradient(320px 160px at 100% 0%, rgba(255,106,18,0.35), transparent 55%),
+    #141414;
+  border: 1px solid #2A2A2A;
+  border-radius: 20px;
+  padding: 1.25rem 1.35rem;
+  margin: 0.85rem 0 1rem;
+}
+.insight-card .eyebrow { margin-bottom: 0.55rem; }
+.insight-card h2 {
+  margin: 0 0 0.65rem;
+  font-size: clamp(1.35rem, 2.4vw, 1.85rem);
+  line-height: 1.15;
+  color: #FFFFFF !important;
+  letter-spacing: -0.03em;
+}
+.insight-card .lead {
+  color: #FFB48A;
+  font-size: 1.05rem;
+  line-height: 1.55;
+  margin: 0 0 0.85rem;
+  font-weight: 650;
+}
+.insight-card .body-p {
+  color: #E8E8E8;
+  font-size: 0.98rem;
+  line-height: 1.6;
+  margin: 0 0 0.65rem;
+}
+.insight-card .body-p:last-child { margin-bottom: 0; }
+.insight-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin: 0.85rem 0 0.35rem;
+}
+@media (max-width: 900px) {
+  .insight-split { grid-template-columns: 1fr; }
+}
+.insight-pane {
+  background: #101010;
+  border: 1px solid #262626;
+  border-radius: 14px;
+  padding: 0.85rem 0.95rem;
+}
+.insight-pane h4 {
+  margin: 0 0 0.45rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #FF6A12 !important;
+}
+.insight-pane li {
+  color: #D4D4D4;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  margin-bottom: 0.4rem;
+}
+.insight-pane .wt { color: #FFFFFF; font-weight: 700; font-variant-numeric: tabular-nums; }
+.num-full {
+  font-variant-numeric: tabular-nums;
+  font-family: 'Outfit', ui-monospace, monospace;
+  letter-spacing: -0.02em;
+  word-break: break-all;
+}
+
 div[data-baseweb="select"] > div, .stTextArea textarea, .stTextInput input {
   background: #141414 !important;
   color: #F4F4F4 !important;

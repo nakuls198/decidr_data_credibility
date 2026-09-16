@@ -61,7 +61,7 @@ def authority_tier_and_weight(source_type: str, doc_id: str, superseded: bool) -
         tier = "secondhand"
         base *= SUPERSEDED_PENALTY
 
-    return tier, round(base, 3)
+    return tier, float(base)
 
 
 def independence_weights(evidence_texts: List[str]) -> List[float]:
@@ -93,7 +93,7 @@ def independence_weights(evidence_texts: List[str]) -> List[float]:
     for cluster in clusters:
         w = 1.0 / len(cluster)
         for i in cluster:
-            weights[i] = round(w, 3)
+            weights[i] = float(w)
     return weights
 
 
@@ -116,6 +116,6 @@ def apply_weights(reasoned_hits: List[Dict[str, Any]], superseded_lookup: Dict[s
         h["authority_tier"] = tier
         h["recency_weight"] = recency_w
         h["independence_weight"] = iw
-        h["final_weight"] = round(authority_w * recency_w * iw * h.get("stance_confidence", 1.0), 4)
+        h["final_weight"] = float(authority_w * recency_w * iw * h.get("stance_confidence", 1.0))
 
     return reasoned_hits

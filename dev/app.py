@@ -9,8 +9,18 @@ import plotly.graph_objects as go
 import streamlit as st
 
 from services import engine
+from services.format_num import full_num, round_num
 from ui.styles import CSS, badge
-from ui.widgets import cream_note, glass_kpis, hero, mixed_kpis, ring_row, stages_strip, status_line
+from ui.widgets import (
+    cream_note,
+    glass_kpis,
+    hero,
+    insight_panel,
+    mixed_kpis,
+    ring_row,
+    stages_strip,
+    status_line,
+)
 
 ROOT = Path(__file__).resolve().parent
 
@@ -73,14 +83,16 @@ def page_overview(profile: dict) -> None:
     with c1:
         cream_note(
             "What this is not",
-            "It is not a chatbot that hides disagreement. A language model may later write the explanation, "
-            "but it does not choose the score. Calibration is refused until enough labels exist.",
+            "It is not a chatbot that hides disagreement. When policy and practice diverge, the studio surfaces Conflicted "
+            "as a finished answer — not a bug to average away. A language model may later polish the explanation, "
+            "but it does not choose the score. Calibration stays refused until enough labelled claims exist.",
         )
         st.markdown(
-            '<div class="glass"><div class="eyebrow">The tension</div>'
-            "<p class='small'>POL-01 (March 2025) says Harriet must approve new-business discounts of 15%+ in the CRM. "
-            "PROC-02 (2022) still names Victor. Diane’s Slack workaround is copied through COMMS-02–04. "
-            "Some CRM rows follow policy; DEAL-014 / 027 / 041 do not. Formal and practised are two claims.</p></div>",
+            '<div class="glass"><div class="eyebrow">The tension · why scores matter</div>'
+            "<p class='small'><b>POL-01 (March 2025)</b> says Harriet must approve new-business discounts of 15%+ in the CRM. "
+            "<b>PROC-02 (2022)</b> still names Victor. Diane’s Slack workaround is copied through <b>COMMS-02–04</b>. "
+            "Some CRM rows follow policy; <b>DEAL-014 / 027 / 041</b> do not. Formal and practised are two claims — "
+            "and the workbench gold list now covers both layers across the main Northfield processes.</p></div>",
             unsafe_allow_html=True,
         )
     with c2:
@@ -88,9 +100,8 @@ def page_overview(profile: dict) -> None:
             '<div class="glass"><div class="eyebrow">How to use this studio</div>'
             "<p class='small'><b>Command centre</b> — pack numbers.<br>"
             "<b>Data atlas</b> — files and people.<br>"
-            "<b>Claim workbench</b> — score one sentence.<br>"
+            "<b>Claim workbench</b> — score one sentence and inspect the live trail.<br>"
             "<b>Evidence chat</b> — ask in plain language.<br>"
-            "<b>Pipeline trace</b> — every stage, visible.<br>"
             "<b>Evaluation</b> — recall vs the gold list.<br>"
             "<b>Method</b> — why each stage exists.</p></div>",
             unsafe_allow_html=True,
@@ -221,14 +232,48 @@ def _claim_id_from_text(text: str) -> str:
     return f"LIVE-{digest}"
 
 
-def _show_result(result: dict) -> None:
+def _round_df_cols(df: pd.DataFrame, cols: list[str]) -> pd.DataFrame:
+    out = df.copy()
+    for col in cols:
+        if col in out.columns:
+            out[col] = out[col].map(round_num)
+    return out
+
+
+def _show_result(result: dict, *, show_trace_chart: bool = False) -> None:
     sc = result["scored"]
     status_line(sc["status"], sc["credibility_score"], sc["confidence"], sc.get("credible_interval"))
-    st.markdown(f"<p class='small'>{result['explanation']}</p>", unsafe_allow_html=True)
-    c1, c2, c3 = st.columns(3)
-    c1.metric("Retrieved", result["n_retrieved"])
-    c2.metric("Kept after reasoning", result["n_kept"])
-    c3.metric("Dropped as unrelated", result["n_dropped"])
+    rich = result.get("explanation_rich") or {}
+    if rich:
+        insight_panel(rich)
+    else:
+        cream_note("Result narrative", result.get("explanation") or "")
+
+    thought = result.get("thought_process") or []
+    if thought:
+        st.markdown("##### Thought process (pipeline trace)")
+        for step in thought:
+            st.markdown(
+                f"<div class='glass'><div class='eyebrow'>{step.get('step', '')}</div>"
+                f"<p class='small' style='margin:0;'>{step.get('detail', '')}</p></div>",
+                unsafe_allow_html=True,
+            )
+        src = result.get("explain_source", "template")
+        st.caption(f"Narrative source: {src} · score chosen by deterministic pipeline, not LLM")
+
+    rich_meta = result.get("explanation_rich") or {}
+    mixed_kpis(
+        [
+            (str(result["n_retrieved"]), "Retrieved", "dark"),
+            (str(result["n_kept"]), "Kept after reasoning", "orange"),
+            (str(result["n_dropped"]), "Dropped unrelated", "dark"),
+            (
+                full_num(rich_meta.get("support_weight_sum", 0)),
+                "Support weight Σ",
+                "orange",
+            ),
+        ]
+    )
     if result["weighted"]:
         wdf = pd.DataFrame(
             [
@@ -244,14 +289,53 @@ def _show_result(result: dict) -> None:
                 for e in result["weighted"]
             ]
         )
-        st.dataframe(wdf, use_container_width=True, hide_index=True, height=280)
+        st.markdown("##### Weighted evidence")
+        st.dataframe(
+            _round_df_cols(wdf, ["weight", "independence"]),
+            use_container_width=True,
+            hide_index=True,
+            height=280,
+        )
+
+    if show_trace_chart and result.get("hits"):
+        fig = go.Figure()
+        kept = [h for h in result["hits"] if h["kept"]]
+        dropped = [h for h in result["hits"] if not h["kept"]]
+        if kept:
+            fig.add_bar(
+                x=[h["doc_id"] for h in kept],
+                y=[round_num(h["retrieval_score"]) for h in kept],
+                name="kept",
+                marker_color="#FF6A12",
+            )
+        if dropped:
+            fig.add_bar(
+                x=[h["doc_id"] for h in dropped],
+                y=[round_num(h["retrieval_score"]) for h in dropped],
+                name="unrelated",
+                marker_color="#3F3F3F",
+            )
+        fig.update_layout(title=dict(text="Retrieval scores", font=dict(size=16, color="#FFFFFF")))
+        st.plotly_chart(_style_fig(fig), use_container_width=True, config={"displayModeBar": False})
+        st.caption(
+            "Heuristic stance can mis-label a policy that uses contrast language. "
+            "That gap is shown here rather than hidden."
+        )
 
 
 def page_workbench(chunks, retriever, gold) -> None:
     hero(
         "Claim workbench",
-        "Score one testable sentence",
-        "A claim needs a role, an action and a condition. Formal and practised versions of the same topic are two rows.",
+        "Score · then see the trail",
+        "Pick from the expanded gold list or type a sentence with role, action and condition. "
+        "The same run returns the verdict, the glorified narrative, weighted files, and the retrieval chart — "
+        "formal and practised versions of one topic stay as two separate rows.",
+    )
+    n_gold = len(gold.get("claims", []))
+    cream_note(
+        f"{n_gold} gold claims ready",
+        "Use the gold list to stress-test discount approval, onboarding, escalations, CRM exceptions and "
+        "practised workarounds. Scores and weights are shown to five decimal places.",
     )
     options = ["Type a claim"] + [f"{c['claim_id']} · {c['claim_text']}" for c in gold["claims"]]
     choice = st.selectbox("Gold list", options)
@@ -264,6 +348,8 @@ def page_workbench(chunks, retriever, gold) -> None:
     method = c2.selectbox("Score method", ["bayesian", "weighted_checklist"])
     prior = c3.slider("Prior (Bayesian)", 0.1, 0.9, 0.5, 0.05)
     go_btn = st.button("Run pipeline", type="primary", use_container_width=True)
+
+    result = None
     if go_btn and claim.strip():
         with st.spinner("Retrieving and scoring…"):
             result = engine.run_claim(
@@ -281,30 +367,50 @@ def page_workbench(chunks, retriever, gold) -> None:
             {
                 "claim": claim.strip(),
                 "status": result["scored"]["status"],
-                "score": result["scored"]["credibility_score"],
+                "score": round_num(result["scored"]["credibility_score"]),
             }
         )
-        _show_result(result)
-        with st.expander("Retrieval shortlist (including unrelated)"):
+    elif st.session_state.get("last_trace") and not go_btn:
+        result = st.session_state["last_trace"]
+
+    if result:
+        st.markdown("##### Verdict & insight")
+        _show_result(result, show_trace_chart=True)
+        with st.expander("Retrieval shortlist (including unrelated)", expanded=False):
             hdf = pd.DataFrame(result["hits"])
             if not hdf.empty:
                 hdf["preview"] = hdf["text"].str.replace("\n", " ").str[:180]
                 st.dataframe(
-                    hdf[["doc_id", "source_type", "retrieval_score", "stance", "kept", "preview"]],
+                    _round_df_cols(
+                        hdf[["doc_id", "source_type", "retrieval_score", "stance", "kept", "preview"]],
+                        ["retrieval_score"],
+                    ),
                     use_container_width=True,
                     hide_index=True,
                 )
-        st.info(result["calibration"])
+        with st.expander("Run metadata", expanded=False):
+            st.markdown(
+                f"<p class='small'><b>Method</b> {result['method']} · <b>prior</b> {full_num(result['prior'])} · "
+                f"<b>top_k</b> {result['top_k']}<br>"
+                f"<b>Query tokens</b> {', '.join(result.get('query_tokens') or [])}<br>"
+                f"{result['calibration']}</p>",
+                unsafe_allow_html=True,
+            )
+    else:
+        st.info("Choose a gold claim (or type one) and run the pipeline to see score, narrative and trail together.")
+
     if st.session_state.get("history"):
         st.markdown("##### Session scores")
-        st.dataframe(pd.DataFrame(st.session_state["history"]), use_container_width=True, hide_index=True)
+        hist_df = pd.DataFrame(st.session_state["history"])
+        st.dataframe(hist_df, use_container_width=True, hide_index=True)
 
 
 def page_chat(chunks, retriever) -> None:
     hero(
         "Evidence chat",
         "Ask how Northfield actually works",
-        "Your message is treated as a claim. The reply is a status, a score, and the files that moved it — not a free-form chatbot paragraph.",
+        "Your message is treated as a claim. The reply leads with a clear verdict and a readable narrative — "
+        "status, score to five decimals, and the files that moved it — not a free-form chatbot paragraph.",
     )
     st.markdown(
         "<div class='glass'><div class='eyebrow'>Try</div><p class='small'>"
@@ -324,7 +430,7 @@ def page_chat(chunks, retriever) -> None:
         with st.chat_message(msg["role"]):
             st.markdown(msg["text"])
             if msg.get("result"):
-                _show_result(msg["result"])
+                _show_result(msg["result"], show_trace_chart=False)
                 st.session_state.last_trace = msg["result"]
 
     chips = st.columns(3)
@@ -345,66 +451,22 @@ def page_chat(chunks, retriever) -> None:
             top_k=15,
         )
         sc = result["scored"]
+        rich = result.get("explanation_rich") or {}
+        insight = rich.get("insight") or ""
         reply = (
-            f"**{sc['status']}** · score {sc['credibility_score']:.2f} · confidence {sc['confidence']}. "
-            f"Kept {result['n_kept']} of {result['n_retrieved']} retrieved chunks."
+            f"**{sc['status']}** · score `{full_num(sc['credibility_score'])}` · confidence **{sc['confidence']}**. "
+            f"Kept {result['n_kept']} of {result['n_retrieved']} retrieved chunks. {insight}"
         )
         st.session_state.messages.append({"role": "assistant", "text": reply, "result": result})
         st.rerun()
-
-
-def page_trace() -> None:
-    hero(
-        "Pipeline trace",
-        "Every stage, left visible",
-        "If retrieval misses POL-01, later stages must not invent a score. Open a claim in Workbench or Chat first.",
-    )
-    result = st.session_state.get("last_trace")
-    if not result:
-        st.warning("Run a claim in the workbench or chat to fill this trace.")
-        return
-    steps = [
-        ("1 · Ingest", "Already done from data/phase1 + data/phase2. Later stages read chunks.jsonl, they do not re-parse the pack."),
-        ("2 · Claim", result["claim_text"]),
-        ("3 · Retrieve", f"BM25, top_k={result['top_k']}. Tokens: {', '.join(result['query_tokens'][:18])}"),
-        ("4 · Reason", f"{result['n_kept']} kept, {result['n_dropped']} unrelated dropped."),
-        ("5 · Weight", "Policy > process > meeting > interview > CRM > Slack. Copies share independence weight."),
-        ("6 · Score", f"{result['method']} · prior {result['prior']}"),
-        ("7 · Calibrate", result["calibration"]),
-        ("8 · Explain", "Template prose. The model does not choose the score."),
-    ]
-    for title, body in steps:
-        st.markdown(
-            f'<div class="glass trace-step"><b>{title}</b><p class="small">{body}</p></div>',
-            unsafe_allow_html=True,
-        )
-    _show_result(result)
-    fig = go.Figure()
-    kept = [h for h in result["hits"] if h["kept"]]
-    dropped = [h for h in result["hits"] if not h["kept"]]
-    if kept:
-        fig.add_bar(
-            x=[h["doc_id"] for h in kept],
-            y=[h["retrieval_score"] for h in kept],
-            name="kept",
-            marker_color="#FF6A12",
-        )
-    if dropped:
-        fig.add_bar(
-            x=[h["doc_id"] for h in dropped],
-            y=[h["retrieval_score"] for h in dropped],
-            name="unrelated",
-            marker_color="#3F3F3F",
-        )
-    st.plotly_chart(_style_fig(fig), use_container_width=True, config={"displayModeBar": False})
-    st.caption("Heuristic stance can mis-label a policy that uses contrast language. That is a known gap, shown here rather than hidden.")
 
 
 def page_eval(chunks, retriever) -> None:
     hero(
         "Evaluation",
         "Does search recover the files we already know?",
-        "Recall is measured against the human gold list. Status match uses the current heuristic reasoner — disagreement is useful, not something to paper over.",
+        "Recall is measured against the human gold list. Status match uses the current heuristic reasoner — "
+        "disagreement is a useful signal, not something to paper over. Scores are shown to five decimal places.",
     )
     top_k = st.slider("k", 5, 30, 15, key="eval_k")
     if st.button("Run gold evaluation", type="primary"):
@@ -421,7 +483,7 @@ def page_eval(chunks, retriever) -> None:
     rec = float(df["retrieval_recall"].mean())
     glass_kpis(
         [
-            (f"{rec:.0%}", "Mean recall @ k"),
+            (full_num(rec), "Mean recall @ k"),
             (f"{match}/{n}", "Status matches"),
             (str(n), "Gold claims"),
         ]
@@ -429,7 +491,11 @@ def page_eval(chunks, retriever) -> None:
     show = df[
         ["claim_id", "layer", "expected_status", "actual_status", "score", "confidence", "retrieval_recall", "match"]
     ]
-    st.dataframe(show, use_container_width=True, hide_index=True)
+    st.dataframe(
+        _round_df_cols(show, ["score", "retrieval_recall"]),
+        use_container_width=True,
+        hide_index=True,
+    )
     fig = px.bar(
         df,
         x="claim_id",
@@ -448,7 +514,8 @@ def page_extract(chunks) -> None:
     hero(
         "Claim extraction",
         "Rule-based candidates",
-        "Sentences with must / shall / required. Unreviewed. An LLM may propose later; a human still has to keep role, action, condition.",
+        "Sentences with must / shall / required. Unreviewed. An LLM may propose later; a human still has to keep role, action, condition. "
+        "Extraction confidence is shown to five decimal places so borderline rows stay distinguishable.",
     )
     limit = st.slider("Show first N", 10, 80, 30)
     with st.spinner("Extracting…"):
@@ -456,7 +523,13 @@ def page_extract(chunks) -> None:
     st.caption(f"{total} candidates in the pack. Showing {len(rows)}.")
     df = pd.DataFrame(rows)
     keep = [c for c in ["claim_id", "claim_text", "responsible_role", "layer", "origin_doc_id", "extraction_confidence"] if c in df.columns]
-    st.dataframe(df[keep] if keep else df, use_container_width=True, hide_index=True, height=460)
+    extract_df = df[keep] if keep else df
+    st.dataframe(
+        _round_df_cols(extract_df, ["extraction_confidence"]),
+        use_container_width=True,
+        hide_index=True,
+        height=460,
+    )
 
 
 def page_method() -> None:
@@ -509,7 +582,6 @@ def main() -> None:
                 "Data atlas",
                 "Claim workbench",
                 "Evidence chat",
-                "Pipeline trace",
                 "Claim extraction",
                 "Evaluation",
                 "Method",
@@ -519,7 +591,9 @@ def main() -> None:
         st.markdown(
             f"<p class='small'>Working store: <code>data/outputs/chunks.jsonl</code><br>"
             f"{profile['document_count']} files · {profile['chunk_count']} chunks · assessment {profile['assessment_date']}<br>"
-            "Raw Phase 2 on disk: <code>data/phase2/</code></p>",
+            f"Gold claims: <b>{len(gold.get('claims', []))}</b><br>"
+            "Raw data: <code>data/raw/phase1</code> + <code>data/raw/phase2</code><br>"
+            "Combined: <code>data/combined/</code></p>",
             unsafe_allow_html=True,
         )
 
@@ -529,7 +603,6 @@ def main() -> None:
         "Data atlas": lambda: page_atlas(chunks, documents, roster),
         "Claim workbench": lambda: page_workbench(chunks, retriever, gold),
         "Evidence chat": lambda: page_chat(chunks, retriever),
-        "Pipeline trace": page_trace,
         "Claim extraction": lambda: page_extract(chunks),
         "Evaluation": lambda: page_eval(chunks, retriever),
         "Method": page_method,
